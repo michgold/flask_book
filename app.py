@@ -36,7 +36,7 @@ def api_bookshelves():
     return jsonify([{'id': b.id, 'name': b.name} for b in bookshelves])
 
 @app.route('/', methods=['GET', 'POST'])
-def add_book():
+def index():
     if request.method == 'POST':
         title = request.form['title']
         author = request.form['author']
@@ -48,11 +48,6 @@ def add_book():
         db.session.commit()
         flash('Book added successfully!', 'success')
 
-    books = Book.query.order_by(Book.id.desc()).all()
-    return render_template('index.html', books=books)
-
-@app.route('/', methods=['GET'])
-def index():
     title_filter = request.args.get('title', '')
     author_filter = request.args.get('author', '')
     bookshelf_filter = request.args.get('bookshelf', '')
@@ -71,9 +66,6 @@ def index():
     return render_template('index.html', books=books, bookshelves=bookshelves)
 
 
-
-
-
 @app.route('/edit/<int:book_id>', methods=['GET', 'POST'])
 def edit_book(book_id):
     book = Book.query.get_or_404(book_id)
@@ -84,7 +76,7 @@ def edit_book(book_id):
         book.bookshelf = Bookshelf.query.get(bookshelf_id) if bookshelf_id else None
         db.session.commit()
         flash('Book updated successfully!', 'success')
-        return redirect(url_for('add_book'))
+        return redirect(url_for('index'))
 
     bookshelves = Bookshelf.query.order_by(Bookshelf.id.desc()).all()
     return render_template('edit_book.html', book=book, bookshelves=bookshelves)
@@ -99,7 +91,7 @@ def delete_book(book_id):
     book = Book.query.get_or_404(book_id)
     db.session.delete(book)
     db.session.commit()
-    return redirect(url_for('add_book'))
+    return redirect(url_for('index'))
 
 def init_db():
     db.create_all()
