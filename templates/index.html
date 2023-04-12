@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Books</h1>
+    <a href="{{ url_for('add_book_form') }}" class="btn btn-primary mb-3">Add Book</a>
+    <form method="GET" id="filter-form">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Bookshelf</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.bookshelf.name if book.bookshelf else 'None' }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn btn-warning">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock %}
