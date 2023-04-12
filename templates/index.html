@@ -5,42 +5,36 @@
     <h1>Books</h1>
     <a href="{{ url_for('add_book_form') }}" class="btn btn-primary mb-3">Add Book</a>
     <form method="GET" id="filter-form">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ title_filter }}" onchange="document.getElementById('filter-form').submit()">
-                    </th>
-                    <th>
-                        <input type="text" name="author" id="author" class="form-control" placeholder="Author" value="{{ author_filter }}" onchange="document.getElementById('filter-form').submit()">
-                    </th>
-                    <th>
-                        <select name="bookshelf" id="bookshelf" class="form-control" onchange="document.getElementById('filter-form').submit()">
-                            <option value="">Bookshelf</option>
-                            {% for bookshelf in bookshelves %}
-                            <option value="{{ bookshelf.id }}" {% if bookshelf_filter == bookshelf.id %} selected {% endif %}>{{ bookshelf.name }}</option>
-                            {% endfor %}
-                        </select>                   
-                    </th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for book in books %}
-                <tr>
-                    <td>{{ book.title }}</td>
-                    <td>{{ book.author }}</td>
-                    <td>{{ book.bookshelf.name if book.bookshelf else 'None' }}</td>
-                    <td>
-                        <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn btn-warning">Edit</a>
-                        <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" class="d-inline">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <!-- Filter input fields and table header go here -->
     </form>
+
+    <form method="POST" action="{{ url_for('add_to_shopping_list') }}">
+        <input type="submit" value="Add to Shopping List" class="btn btn-primary mb-3">
+        <a href="{{ url_for('shopping_list') }}" class="btn btn-secondary mb-3">View Shopping List</a>
+    </form>
+
+    <table class="table">
+        <thead>
+            <!-- Table header goes here -->
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="selected_books" value="{{ book.id }}" form="{{ url_for('add_to_shopping_list') }}">
+                </td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.bookshelf.name if book.bookshelf else 'None' }}</td>
+                <td>
+                    <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn btn-warning">Edit</a>
+                    <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

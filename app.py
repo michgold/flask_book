@@ -19,6 +19,26 @@ class Book(db.Model):
     author = db.Column(db.String(100), nullable=False)
     bookshelf_id = db.Column(db.Integer, db.ForeignKey('bookshelf.id'), nullable=True)
 
+class ShoppingList(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    book = db.relationship('Book', backref='shopping_list_items', lazy=True)
+
+@app.route('/shopping-list/add', methods=['POST'])
+def add_to_shopping_list():
+    book_ids = request.form.getlist('selected_books')
+    for book_id in book_ids:
+        shopping_list_item = ShoppingList(book_id=book_id)
+        db.session.add(shopping_list_item)
+    db.session.commit()
+    flash('Books added to shopping list successfully!', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/shopping-list', methods=['GET'])
+def shopping_list():
+    shopping_list_items = ShoppingList.query.all()
+    return render_template('shopping_list.html', shopping_list_items=shopping_list_items)
+
 @app.route('/bookshelves', methods=['GET', 'POST'])
 def bookshelves():
     if request.method == 'POST':

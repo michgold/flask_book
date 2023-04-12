@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Shopping List</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Bookshelf</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in shopping_list_items %}
+            <tr>
+                <td>{{ item.book.title }}</td>
+                <td>{{ item.book.author }}</td>
+                <td>{{ item.book.bookshelf.name if item.book.bookshelf else 'None' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
+</div>
+{% endblock %}
