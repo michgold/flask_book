@@ -8,9 +8,20 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Bookshelf</th>
+                    <th>
+                        <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ title_filter }}" onchange="document.getElementById('filter-form').submit()">
+                    </th>
+                    <th>
+                        <input type="text" name="author" id="author" class="form-control" placeholder="Author" value="{{ author_filter }}" onchange="document.getElementById('filter-form').submit()">
+                    </th>
+                    <th>
+                        <select name="bookshelf" id="bookshelf" class="form-control" onchange="document.getElementById('filter-form').submit()">
+                            <option value="">Bookshelf</option>
+                            {% for bookshelf in bookshelves %}
+                            <option value="{{ bookshelf.id }}" {% if bookshelf_filter == bookshelf.id %} selected {% endif %}>{{ bookshelf.name }}</option>
+                            {% endfor %}
+                        </select>                   
+                    </th>
                     <th>Actions</th>
                 </tr>
             </thead>

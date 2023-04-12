@@ -57,18 +57,19 @@ def index():
     author_filter = request.args.get('author', '')
     bookshelf_filter = request.args.get('bookshelf', '')
 
-    query = Book.query
+    query = Book.query.join(Bookshelf)
 
     if title_filter:
         query = query.filter(Book.title.ilike(f"%{title_filter}%"))
     if author_filter:
         query = query.filter(Book.author.ilike(f"%{author_filter}%"))
     if bookshelf_filter:
-        query = query.filter(Book.bookshelf_id == bookshelf_filter)
+        query = query.filter(Bookshelf.id == bookshelf_filter)
 
     books = query.order_by(Book.id.desc()).all()
-    bookshelves = Bookshelf.query.order_by(Bookshelf.id.desc()).all()
+    bookshelves = Bookshelf.query.all()
     return render_template('index.html', books=books, bookshelves=bookshelves)
+
 
 
 
